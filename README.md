@@ -35,10 +35,10 @@ This demonstration node is not designed to be installed directly via **git clone
 If you want to learn how to develop this custom node or modify it, you can set up a local development environment. Follow these steps:
 1. Clone the repository in your ComfyUI custom nodes directory:
    ```bash
-   git clone https://github.com/jtydhr88/ComfyUI_frontend_vue_basic
+   git clone https://github.com/smk-h/ComfyUI_sm_utils
 2. Navigate to the project directory: 
    ```bash
-   cd ComfyUI_frontend_vue_basic
+   cd ComfyUI_sm_utils
    ```
 3. Install dependencies:
    ```bash

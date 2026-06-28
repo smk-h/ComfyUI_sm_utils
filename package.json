@@ -1,5 +1,5 @@
 {
-  "name": "comfyui-frontend-vue-basic",
+  "name": "comfyui_sm_utils",
   "version": "0.2.0",
   "type": "module",
   "dependencies": {

@@ -1,12 +1,12 @@
 [project]
-name = "comfyui_frontend_vue_basic"
+name = "comfyui_sm_utils"
 description = "ComfyUI Frontend Vue Basic is custom node that demonstrate how to use vue as frontend framework along with primevue and vue-i18n, cooperating with ComfyUI API. Needs ComfyUI Frontend 1.25.0 or later."
 version = "0.2.0"
 license = {file = "LICENSE"}
 dependencies = []
 
 [project.urls]
-Repository = "https://github.com/jtydhr88/ComfyUI_frontend_vue_basic"
+Repository = "https://github.com/smk-h/ComfyUI_sm_utils"
 #  Used by Comfy Registry https://comfyregistry.org
 [tool.comfy]
 PublisherId = "jtydhr88"
