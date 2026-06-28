@@ -1,0 +1,40 @@
+# 匹配所有分支名
+'**':
+  web_trigger_cnb_custom_env:
+    - services:
+        - docker
+      stages:
+        - name: print web param
+          script: |
+            set +x
+            echo "developer=${developer}"
+            echo "cluster_tag=${cluster_tag}"
+            echo "cpu_cores=${cpu_cores}"
+            echo "image_select=${image_select}"
+            echo "custom_image_url=${custom_image_url}"
+        # - name: 使用插件镜像打印参数
+        #   image: docker.cnb.cool/sumu.k/cnb-custom-env/cnb-custom-env-prt
+        #   settings:
+        #     developer: ${developer}
+        #     cluster_tag: ${cluster_tag}
+        #     cpu_cores: ${cpu_cores}
+        #     image_select: ${image_select}
+        #     custom_image_url: ${custom_image_url}
+        - name: start custom environment with custom image
+          if: |
+            [ "$custom_image_url" != "" ]
+          image: docker.cnb.cool/sumu.k/cnb-custom-env/cnb-custom-env
+          settings:
+            stype: 'custom'
+            cpu: '${cpu_cores}'
+            image: '${custom_image_url}'
+            tag: '${cluster_tag}'
+        - name: start custom environment with selected image
+          if: |
+            [ "$custom_image_url" == "" ]
+          image: docker.cnb.cool/sumu.k/cnb-custom-env/cnb-custom-env
+          settings:
+            stype: 'custom'
+            cpu: '${cpu_cores}'
+            image: '${image_select}'
+            tag: '${cluster_tag}'

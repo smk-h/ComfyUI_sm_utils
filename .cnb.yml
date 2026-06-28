@@ -1,0 +1,49 @@
+# .cnb.yml
+include:
+  - .cnb/workflows/cnb-custom-env.yml
+  - .cnb/workflows/cnb-build-image.yml
+# - .cnb/workflows/cnb-crontab.yml
+
+main:
+  push:
+    - stages:
+        - name: sync to sumumm'github
+          image: tencentcom/git-sync
+          imports: https://cnb.cool/sumu.k/secret-key/-/blob/main/access-token.yml
+          settings:
+            target_url: https://github.com/smk-h/ComfyUI_sm_utils.git
+            auth_type: https
+            username: sumumm
+            password: ${GITHUB_CNB_SYNC}
+            force: true
+$:
+  vscode:
+    - docker:
+        # 指定开发环境镜像，可以是任意可访问的镜像。
+        # 如果 image 指定的镜像中已安装 code-server 代码服务，将使用单容器模式启动开发环境
+        # 如果 image 指定的镜像中未安装 code-server 代码服务，将使用双容器模式启动开发环境
+        # 如下镜像为 CNB 默认开发环境镜像，已安装代码服务，将使用单容器模式启动开发环境
+        # 可按需替换为其他镜像
+        image: cnbcool/default-dev-env:latest
+        # build:
+        #   dockerfile: Dockerfile
+      env:
+        # 声明首次打开终端时自动执行的命令，支持多行文本
+        CNB_WELCOME_CMD: |
+          clear; echo "++++++++++ Hello sumu ++++++++++"
+      # https://docs.cnb.cool/zh/build/build-node.html
+      # runner:
+      #   cpus: 32
+      #   tags: cnb:arch:amd64:gpu:H20
+      imports:
+        - https://cnb.cool/sumu.k/secret-key/-/blob/main/llm.yml
+      services:
+        - vscode
+        - docker
+      # 开发环境启动后会执行的任务
+      stages:
+        - name: 配置git
+          script: |
+            git config --global core.editor vim
+            git config --global alias.mylog "log --graph --pretty=format:'%C(magenta)[%an]%C(reset) %C(red)%h%C(reset) : %C(green)%s%C(reset) %C(yellow)%d%C(reset) %C(blue)(%cd)%C(reset) ' --abbrev-commit --date=format:'%Y-%m-%d %H:%M:%S'"
+            git config --global alias.sync-force '!git fetch origin && git reset --hard "origin/$(git symbolic-ref --short HEAD)"'

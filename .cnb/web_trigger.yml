@@ -1,0 +1,109 @@
+branch:
+  # 正则匹配所有分支,按钮将在所有分支详情页面显示
+  - reg: '.*'
+    buttons:
+      - name: 启动自定义开发环境
+        # 如存在,则将作为流水线 title,否则流水线使用默认 title；可支持环境变量替换(仅支持替换一级,环境变量指的是当前配置的 env 和 inputs。仅支持 ${xxx} 写法。)
+        description: 选择构建集群、CPU 核数和开发环境镜像
+        # 触发的 CI 事件名,需要在 .cnb.yml 中配置
+        event: web_trigger_cnb_custom_env
+        # 是否默认按钮,若是,则按钮可直接点击并触发
+        isDefault: true
+        # 可输入环境变量,可覆盖上述 env 的变量配置
+        inputs:
+          # 目前支持以下三种格式：输入框(input)、多行文本输入框(textarea)、下拉选择框(select 支持单选和多选),switch 开关(switch),radio 单选框(radio)
+          # 其中 key 值(var1、var2、var3、var4、var5、var6)为环境变量名
+          # inputs 也支持分组,见下方按钮二 inputs 配置
+          developer:
+            # 输入框
+            name: 开发者
+            description: 开发者的用户名
+            placeholder: 请输入开发者用户名
+            required: false # 是否必填
+            type: input
+            default: sumu
+          cluster_tag:
+            name: 构建集群
+            description: 选择构建集群架构或GPU环境
+            type: select
+            required: true
+            default: cnb:arch:amd64
+            options:
+              - name: AMD64 架构(通用)- 1~64核
+                value: cnb:arch:amd64
+                description: 通用AMD64架构,CPU可配置1-64核
+              - name: ARM64/v8 架构 - 1~16核
+                value: cnb:arch:arm64:v8
+                description: ARM64/v8架构,CPU可配置1-16核
+              - name: AMD64 + GPU(标准)- 16核固定,48GB显存
+                value: cnb:arch:amd64:gpu
+                description: AMD64架构+GPU,48GB显存共享,CPU固定16核
+              - name: AMD64 + GPU H20 - 32核固定,96GB显存
+                value: cnb:arch:amd64:gpu:H20
+                description: AMD64架构+GPU H20,96GB显存共享,CPU固定32核
+              - name: AMD64 + GPU L40 - 16核固定,48GB显存
+                value: cnb:arch:amd64:gpu:L40
+                description: AMD64架构+GPU L40,48GB显存共享,CPU固定16核
+          cpu_cores:
+            name: CPU 核数
+            description: 选择所需的 CPU 核数(GPU集群将自动使用固定核数)
+            type: select
+            required: true
+            default: '8'
+            options:
+              - name: 1 核(仅限非GPU集群)
+                value: '1'
+              - name: 2 核(仅限非GPU集群)
+                value: '2'
+              - name: 4 核(仅限非GPU集群)
+                value: '4'
+              - name: 8 核(AMD64/ARM64默认)
+                value: '8'
+              - name: 16 核(ARM64最大/GPU标准固定)
+                value: '16'
+              - name: 32 核(仅限AMD64/GPU H20固定)
+                value: '32'
+              - name: 64 核(仅限AMD64架构)
+                value: '64'
+          image_select:
+            name: 镜像选择
+            description: 选择预定义的开发环境镜像
+            type: select
+            required: true
+            default: cnbcool/default-dev-env
+            options:
+              - name: CNB 官方默认远程开发环境
+                value: cnbcool/default-dev-env
+              - name: 苏木 ubuntu-22.04 开发环境
+                value: docker.cnb.cool/sumu.k/docker-learning/ubuntu-22.04
+              - name: 苏木 ubuntu-24.04 开发环境
+                value: docker.cnb.cool/sumu.k/docker-learning/ubuntu-24.04
+              - name: 苏木 node-env 开发环境
+                value: docker.cnb.cool/sumu.k/docker-learning/node-24.x
+              - name: 苏木 go-1.26 开发环境
+                value: docker.cnb.cool/sumu.k/docker-learning/go-1.26
+          custom_image_url:
+            name: 自定义镜像地址
+            description: 输入自定义镜像地址,优先级高于下拉选择镜像(可选)
+            type: input
+            required: false
+            placeholder: 例如:ubuntu:20.04 或 pytorch/pytorch:latest
+      - name: 构建镜像
+        description: 构建并推送 Docker 镜像
+        event: web_trigger_build_image
+        isDefault: false
+        inputs:
+          image_tag:
+            name: 镜像标签
+            description: 构建后的镜像标签
+            placeholder: 请输入镜像标签,如 v1.0.0
+            required: true
+            type: input
+            default: latest
+          dockerfile:
+            name: Dockerfile 路径
+            description: Dockerfile 文件路径
+            placeholder: 请输入 Dockerfile 路径
+            required: false
+            type: input
+            default: Dockerfile

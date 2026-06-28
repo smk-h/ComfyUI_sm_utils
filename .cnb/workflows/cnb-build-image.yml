@@ -1,0 +1,10 @@
+# 匹配所有分支名
+'**':
+  web_trigger_build_image:
+    - services:
+        - docker
+      stages:
+        - name: print web param
+          script: |
+            echo "image_tag=${image_tag}"
+            echo "dockerfile=${dockerfile}"

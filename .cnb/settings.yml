@@ -1,0 +1,12 @@
+workspace:
+  launch:
+    button:
+      name: 知行合一
+      description: 理论为舟，实践为帆
+      hoverImage: .cnb/image.png
+    autoOpenWebIDE: false
+
+fork:
+  button:
+    description: 🔥 你的仓库不错，现在是我的了！
+    hoverImage: '.cnb/image.png'
